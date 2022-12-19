@@ -25,7 +25,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.venv')
 
 
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -37,16 +37,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = '=i52%+87u=&q3tzf=pzautc-#u!sipm5pr&0e3^spna)pavd#7'
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = os.getenv('DEBUG', '0').lower() in ['true', 't', '1']
+DEBUG = 'RENDER' not in os.environ
 TEMPLATE_DEBUG = DEBUG
 
 #ALLOWED_HOSTS = []
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ['*']
+DATABASE_URL = "postgres://interviewbot_user:AFSOupxzzBF5xy7UBlIHyckBXR0IgLHo@dpg-cefc2b82i3mum5uj62ig-a/interviewbot"
 
 
 # Application definition
@@ -214,7 +215,8 @@ LOGIN_URL = '/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Debugging in heroku live
 LOGGING = {
