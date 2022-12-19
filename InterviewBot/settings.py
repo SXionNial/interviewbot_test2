@@ -122,7 +122,6 @@ DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
         default='postgres://interviewbot_user:AFSOupxzzBF5xy7UBlIHyckBXR0IgLHo@dpg-cefc2b82i3mum5uj62ig-a/interviewbot',
-        
         conn_max_age=600
     )
 }
