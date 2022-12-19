@@ -45,8 +45,8 @@ DEBUG = os.getenv('DEBUG', '0').lower() in ['true', 't', '1']
 TEMPLATE_DEBUG = DEBUG
 
 #ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'InterviewBot.wsgi.application'
 
 
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600),
+    'default': dj_database_url.parse(os.environ.get('postgres://interviewbot_hpg8_user:wuItyWdH6oZwyD1ggo95dFokOdmV47Ov@dpg-cefuo2hgp3jk7mi60t20-a/interviewbot_hpg8'), conn_max_age=600),
 }
 
 # DATABASES = {
