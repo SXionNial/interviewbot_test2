@@ -816,7 +816,7 @@ class Applicants(View):
                 return redirect('administrator:response_view')
             if 'btnResume' in request.POST:
                 request.session['applicant'] = request.POST.get("applicantID")
-                return redirect('administrator:response_view')
+                return redirect('administrator:file_submission_view')
         else:
             return render(request, 'job_applicants.html')
 
