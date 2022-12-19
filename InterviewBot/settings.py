@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
-import django_heroku
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
