@@ -183,17 +183,17 @@ class HomePageView(View):
             return redirect('administrator:access_denied_view')
 
         try:  # To only show the applied jobs that are done taking the interview session.
-            appliedjobs = AppliedJob.objects.raw('SELECT * FROM appliedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id AND appliedjob.job_id <> '+str(
-                request.session['job'])+' AND appliedjob.user_id = '+str(self.request.user.id)+' ORDER BY appliedjob.id DESC')
-            # appliedjobs = AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id AND "AppliedJob".job_id <> '+str(request.session['job'])+' AND "AppliedJob".user_id = '+str(self.request.user.id)+' ORDER BY "AppliedJob".id DESC')
+            # appliedjobs = AppliedJob.objects.raw('SELECT * FROM appliedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id AND appliedjob.job_id <> '+str(
+            #     request.session['job'])+' AND appliedjob.user_id = '+str(self.request.user.id)+' ORDER BY appliedjob.id DESC')
+            appliedjobs = AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id AND "AppliedJob".job_id <> '+str(request.session['job'])+' AND "AppliedJob".user_id = '+str(self.request.user.id)+' ORDER BY "AppliedJob".id DESC')
         except:
-            appliedjobs = AppliedJob.objects.raw(
-                'SELECT * FROM appliedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id AND appliedjob.user_id = '+str(self.request.user.id)+' ORDER BY appliedjob.id DESC')
-            # appliedjobs = AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id AND "AppliedJob".user_id = '+str(self.request.user.id)+' ORDER BY "AppliedJob".id DESC')
+            # appliedjobs = AppliedJob.objects.raw(
+            #     'SELECT * FROM appliedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id AND appliedjob.user_id = '+str(self.request.user.id)+' ORDER BY appliedjob.id DESC')
+            appliedjobs = AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id AND "AppliedJob".user_id = '+str(self.request.user.id)+' ORDER BY "AppliedJob".id DESC')
 
-        savedjobs = SavedJob.objects.raw(
-            'SELECT * FROM savedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = savedjob.job_id AND savedjob.user_id = '+str(self.request.user.id)+' ORDER BY savedjob.id DESC')
-        # savedjobs = SavedJob.objects.raw('SELECT * FROM "SavedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "SavedJob".job_id AND "SavedJob".user_id = '+str(self.request.user.id)+' ORDER BY "SavedJob".id DESC')
+        # savedjobs = SavedJob.objects.raw(
+        #     'SELECT * FROM savedjob, jobofferings, account WHERE account.id = jobofferings.admin_id AND jobofferings.id = savedjob.job_id AND savedjob.user_id = '+str(self.request.user.id)+' ORDER BY savedjob.id DESC')
+        savedjobs = SavedJob.objects.raw('SELECT * FROM "SavedJob", "JobOfferings", "Account" WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "SavedJob".job_id AND "SavedJob".user_id = '+str(self.request.user.id)+' ORDER BY "SavedJob".id DESC')
         context = {
             'appliedjobs': appliedjobs,
             'savedjobs': savedjobs
@@ -295,9 +295,9 @@ class JobOffersView(View):
             return redirect('administrator:access_denied_view')
 
         saved_jobs = SavedJob.objects.filter(user_id=user.id)
-        joblists = CreateJob.objects.raw('SELECT jobofferings.id, jobofferings.title, jobofferings.description, account.email, account.firstname, account.lastname FROM jobofferings, account WHERE jobofferings.admin_id = account.id AND jobofferings.id NOT IN (SELECT savedjob.job_id FROM savedjob WHERE '+str(
-            user.id)+' = savedjob.user_id UNION ALL SELECT appliedjob.job_id FROM appliedjob WHERE appliedjob.user_id = '+str(user.id)+') AND jobofferings.is_deleted=0')
-        # joblists = CreateJob.objects.raw('SELECT "JobOfferings".id, "JobOfferings".title, "JobOfferings".description, "Account".email, "Account".firstname, "Account".lastname FROM "JobOfferings", "Account" WHERE "JobOfferings".admin_id = "Account".id AND "JobOfferings".id NOT IN (SELECT "SavedJob".job_id FROM "SavedJob" WHERE '+str(user.id)+' = "SavedJob".user_id UNION ALL SELECT "AppliedJob".job_id FROM "AppliedJob" WHERE "AppliedJob".user_id = '+str(user.id)+') AND "JobOfferings".is_deleted=False')
+        # joblists = CreateJob.objects.raw('SELECT jobofferings.id, jobofferings.title, jobofferings.description, account.email, account.firstname, account.lastname FROM jobofferings, account WHERE jobofferings.admin_id = account.id AND jobofferings.id NOT IN (SELECT savedjob.job_id FROM savedjob WHERE '+str(
+        #     user.id)+' = savedjob.user_id UNION ALL SELECT appliedjob.job_id FROM appliedjob WHERE appliedjob.user_id = '+str(user.id)+') AND jobofferings.is_deleted=0')
+        joblists = CreateJob.objects.raw('SELECT "JobOfferings".id, "JobOfferings".title, "JobOfferings".description, "Account".email, "Account".firstname, "Account".lastname FROM "JobOfferings", "Account" WHERE "JobOfferings".admin_id = "Account".id AND "JobOfferings".id NOT IN (SELECT "SavedJob".job_id FROM "SavedJob" WHERE '+str(user.id)+' = "SavedJob".user_id UNION ALL SELECT "AppliedJob".job_id FROM "AppliedJob" WHERE "AppliedJob".user_id = '+str(user.id)+') AND "JobOfferings".is_deleted=False')
 
         context = {
             'joblists': joblists,
@@ -445,9 +445,9 @@ class JobInterviewQ1View(View):
             if request.session['q1'] == False:
                 request.session['q1'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -497,9 +497,9 @@ class JobInterviewQ2View(View):
             if request.session['q2'] == False:
                 request.session['q2'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -549,10 +549,10 @@ class JobInterviewQ3View(View):
             if request.session['q3'] == False:
                 request.session['q3'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
                 # job = CreateJob.objects.raw(
-                #     'SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw(
+                    'SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -602,9 +602,9 @@ class JobInterviewQ4View(View):
             if request.session['q4'] == False:
                 request.session['q4'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -654,9 +654,9 @@ class JobInterviewQ5View(View):
             if request.session['q5'] == False:
                 request.session['q5'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job)) #using postgresql query
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job)) #using postgresql query
                 context = {
                     'job': job
                 }
@@ -706,9 +706,9 @@ class JobInterviewQ6View(View):
             if request.session['q6'] == False:
                 request.session['q6'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -758,9 +758,9 @@ class JobInterviewQ7View(View):
             if request.session['q7'] == False:
                 request.session['q7'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -810,9 +810,9 @@ class JobInterviewQ8View(View):
             if request.session['q8'] == False:
                 request.session['q8'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -862,9 +862,9 @@ class JobInterviewQ9View(View):
             if request.session['q9'] == False:
                 request.session['q9'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -914,9 +914,9 @@ class JobInterviewQ10View(View):
             if request.session['q10'] == False:
                 request.session['q10'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -966,9 +966,9 @@ class JobInterviewQ11View(View):
             if request.session['q11'] == False:
                 request.session['q11'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1018,9 +1018,9 @@ class JobInterviewQ12View(View):
             if request.session['q12'] == False:
                 request.session['q12'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1070,9 +1070,9 @@ class JobInterviewQ13View(View):
             if request.session['q13'] == False:
                 request.session['q13'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1122,9 +1122,9 @@ class JobInterviewQ14View(View):
             if request.session['q14'] == False:
                 request.session['q14'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1174,9 +1174,9 @@ class JobInterviewQ15View(View):
             if request.session['q15'] == False:
                 request.session['q15'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1226,9 +1226,9 @@ class JobInterviewQ16View(View):
             if request.session['q16'] == False:
                 request.session['q16'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1278,9 +1278,9 @@ class JobInterviewQ17View(View):
             if request.session['q17'] == False:
                 request.session['q17'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1330,9 +1330,9 @@ class JobInterviewQ18View(View):
             if request.session['q18'] == False:
                 request.session['q18'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1382,9 +1382,9 @@ class JobInterviewQ19View(View):
             if request.session['q19'] == False:
                 request.session['q19'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }
@@ -1434,9 +1434,9 @@ class JobInterviewQ20View(View):
             if request.session['q20'] == False:
                 request.session['q20'] = True
                 interview_job = request.session['job']
-                job = CreateJob.objects.raw(
-                    "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
-                # job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
+                # job = CreateJob.objects.raw(
+                #     "SELECT * FROM jobofferings, job_questions WHERE jobofferings.id = job_questions.job_id AND jobofferings.id = " + str(interview_job))
+                job = CreateJob.objects.raw('SELECT * FROM "JobOfferings", "job_questions" WHERE "JobOfferings".id = "job_questions".job_id AND "JobOfferings".id = ' + str(interview_job))
                 context = {
                     'job': job
                 }

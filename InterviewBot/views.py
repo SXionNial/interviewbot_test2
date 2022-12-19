@@ -88,12 +88,12 @@ class SavedJobUserViewAPI(ListAPIView):
 	lookup_field = 'user_id'
 
 	def get_queryset(self):
-		return SavedJob.objects.raw('SELECT * FROM savedjob, jobofferings, account ' +
-			'WHERE account.id = jobofferings.admin_id AND jobofferings.id = savedjob.job_id ' +
-			'AND savedjob.user_id = '+self.kwargs['user_id']+' AND jobofferings.is_deleted = 0 ORDER BY savedjob.id DESC')
-		# return SavedJob.objects.raw('SELECT * FROM "SavedJob", "JobOfferings", "Account" ' +
-		# 	'WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "SavedJob".job_id ' +
-		# 	'AND "SavedJob".user_id = '+self.kwargs['user_id']+' AND "JobOfferings".is_deleted = False ORDER BY "SavedJob".id DESC')
+		# return SavedJob.objects.raw('SELECT * FROM savedjob, jobofferings, account ' +
+		# 	'WHERE account.id = jobofferings.admin_id AND jobofferings.id = savedjob.job_id ' +
+		# 	'AND savedjob.user_id = '+self.kwargs['user_id']+' AND jobofferings.is_deleted = 0 ORDER BY savedjob.id DESC')
+		return SavedJob.objects.raw('SELECT * FROM "SavedJob", "JobOfferings", "Account" ' +
+			'WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "SavedJob".job_id ' +
+			'AND "SavedJob".user_id = '+self.kwargs['user_id']+' AND "JobOfferings".is_deleted = False ORDER BY "SavedJob".id DESC')
 
 # used - for applied job viewing (USER)
 class AppliedJobUserViewAPI(ListAPIView):
@@ -103,12 +103,12 @@ class AppliedJobUserViewAPI(ListAPIView):
 	lookup_field = 'user_id'
 
 	def get_queryset(self):
-		return AppliedJob.objects.raw('SELECT * FROM appliedjob, jobofferings, account ' +
-		'WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id ' +
-		'AND appliedjob.user_id = '+self.kwargs['user_id']+ ' ORDER BY appliedjob.id DESC')
-		# return AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" ' +
-		# 	'WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id ' +
-		# 	'AND "AppliedJob".user_id = '+self.kwargs['user_id']+ ' ORDER BY "AppliedJob".id DESC')
+		# return AppliedJob.objects.raw('SELECT * FROM appliedjob, jobofferings, account ' +
+		# 'WHERE account.id = jobofferings.admin_id AND jobofferings.id = appliedjob.job_id ' +
+		# 'AND appliedjob.user_id = '+self.kwargs['user_id']+ ' ORDER BY appliedjob.id DESC')
+		return AppliedJob.objects.raw('SELECT * FROM "AppliedJob", "JobOfferings", "Account" ' +
+			'WHERE "Account".id = "JobOfferings".admin_id AND "JobOfferings".id = "AppliedJob".job_id ' +
+			'AND "AppliedJob".user_id = '+self.kwargs['user_id']+ ' ORDER BY "AppliedJob".id DESC')
 
 # used - for job offerings (USER)
 class JobOfferingsViewAPI(ListAPIView):
@@ -118,14 +118,14 @@ class JobOfferingsViewAPI(ListAPIView):
 	lookup_field = 'user_id'
 
 	def get_queryset(self):
-		return CreateJob.objects.raw('SELECT jobofferings.id, jobofferings.title, jobofferings.description, account.email, account.firstname, account.lastname ' +
-		'FROM jobofferings, account WHERE jobofferings.admin_id = account.id AND jobofferings.id NOT IN ' +
-		'(SELECT savedjob.job_id FROM savedjob WHERE ' + self.kwargs['user_id'] + ' = savedjob.user_id UNION ALL ' +
-		'SELECT appliedjob.job_id FROM appliedjob WHERE appliedjob.user_id = ' + self.kwargs['user_id'] + ') AND jobofferings.is_deleted=0')
-		# return CreateJob.objects.raw('SELECT "JobOfferings".id, "JobOfferings".title, "JobOfferings".description, "Account".email, "Account".firstname, "Account".lastname ' +
-		# 	'FROM "JobOfferings", "Account" WHERE "JobOfferings".admin_id = "Account".id AND "JobOfferings".id NOT IN ' +
-		# 	'(SELECT "SavedJob".job_id FROM "SavedJob" WHERE ' + self.kwargs['user_id'] + ' = "SavedJob".user_id UNION ALL ' +
-		# 	'SELECT "AppliedJob".job_id FROM "AppliedJob" WHERE "AppliedJob".user_id = ' + self.kwargs['user_id'] + ') AND "JobOfferings".is_deleted=False')
+		# return CreateJob.objects.raw('SELECT jobofferings.id, jobofferings.title, jobofferings.description, account.email, account.firstname, account.lastname ' +
+		# 'FROM jobofferings, account WHERE jobofferings.admin_id = account.id AND jobofferings.id NOT IN ' +
+		# '(SELECT savedjob.job_id FROM savedjob WHERE ' + self.kwargs['user_id'] + ' = savedjob.user_id UNION ALL ' +
+		# 'SELECT appliedjob.job_id FROM appliedjob WHERE appliedjob.user_id = ' + self.kwargs['user_id'] + ') AND jobofferings.is_deleted=0')
+		return CreateJob.objects.raw('SELECT "JobOfferings".id, "JobOfferings".title, "JobOfferings".description, "Account".email, "Account".firstname, "Account".lastname ' +
+			'FROM "JobOfferings", "Account" WHERE "JobOfferings".admin_id = "Account".id AND "JobOfferings".id NOT IN ' +
+			'(SELECT "SavedJob".job_id FROM "SavedJob" WHERE ' + self.kwargs['user_id'] + ' = "SavedJob".user_id UNION ALL ' +
+			'SELECT "AppliedJob".job_id FROM "AppliedJob" WHERE "AppliedJob".user_id = ' + self.kwargs['user_id'] + ') AND "JobOfferings".is_deleted=False')
 
 # used - to SAVE job offering
 class SaveJobOfferingCreateViewAPI(CreateAPIView):
@@ -160,10 +160,10 @@ class AppliedJobApplicantsListViewAPI(ListAPIView):
 	lookup_field = 'job_id'
 
 	def get_queryset(self):
-		return AppliedJob.objects.raw('SELECT * FROM account, jobofferings, appliedjob WHERE appliedjob.job_id = ' + self.kwargs['job_id'] +
-			' AND appliedjob.job_id = jobofferings.id AND account.id = appliedjob.user_id AND appliedjob.final_score != 0 ORDER BY appliedjob.final_score DESC')
-		# return AppliedJob.objects.raw('SELECT * FROM "Account", "JobOfferings", "AppliedJob" WHERE "AppliedJob".job_id = ' + self.kwargs['job_id'] +
-		# 	' AND "AppliedJob".job_id = "JobOfferings".id AND "Account".id = "AppliedJob".user_id AND "AppliedJob".final_score != 0 ORDER BY "AppliedJob".final_score DESC')
+		# return AppliedJob.objects.raw('SELECT * FROM account, jobofferings, appliedjob WHERE appliedjob.job_id = ' + self.kwargs['job_id'] +
+		# 	' AND appliedjob.job_id = jobofferings.id AND account.id = appliedjob.user_id AND appliedjob.final_score != 0 ORDER BY appliedjob.final_score DESC')
+		return AppliedJob.objects.raw('SELECT * FROM "Account", "JobOfferings", "AppliedJob" WHERE "AppliedJob".job_id = ' + self.kwargs['job_id'] +
+			' AND "AppliedJob".job_id = "JobOfferings".id AND "Account".id = "AppliedJob".user_id AND "AppliedJob".final_score != 0 ORDER BY "AppliedJob".final_score DESC')
 
 class AppliedJobListViewAPI(ListAPIView):
 	permissions = (IsAuthenticated,)
