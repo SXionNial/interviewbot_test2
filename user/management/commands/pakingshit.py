@@ -11,5 +11,11 @@ class Command(BaseCommand):
             User.objects.create_superuser(
                 email='admin',
                 password='pass123'
+
+                firstname = 'Angel'
+                lastname = 'Singson'
+                gender = 'Male'
+                phone = '09054592625'
+                # 'firstname', 'lastname', 'gender', and 'phone'
             )
         print('Superuser has been created.')
