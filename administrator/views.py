@@ -814,7 +814,7 @@ class Applicants(View):
             if 'btnAnswers' in request.POST:
                 request.session['applicant'] = request.POST.get("applicantID")
                 return redirect('administrator:response_view')
-            if 'btnResume' in request.POST:
+            elif 'btnResume' in request.POST:
                 request.session['applicant'] = request.POST.get("applicantID")
                 return redirect('administrator:file_submission_view')
         else:
