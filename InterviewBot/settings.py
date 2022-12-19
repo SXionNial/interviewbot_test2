@@ -114,9 +114,19 @@ WSGI_APPLICATION = 'InterviewBot.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': dj_database_url.parse(os.environ.get('postgres://interviewbot_hpg8_user:wuItyWdH6oZwyD1ggo95dFokOdmV47Ov@dpg-cefuo2hgp3jk7mi60t20-a/interviewbot_hpg8'), conn_max_age=600),
+# }
+
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('postgres://interviewbot_hpg8_user:wuItyWdH6oZwyD1ggo95dFokOdmV47Ov@dpg-cefuo2hgp3jk7mi60t20-a/interviewbot_hpg8'), conn_max_age=600),
+    'default': dj_database_url.config(
+        # Feel free to alter this value to suit your needs.
+        default='postgres://interviewbot_user:AFSOupxzzBF5xy7UBlIHyckBXR0IgLHo@dpg-cefc2b82i3mum5uj62ig-a/interviewbot',
+        
+        conn_max_age=600
+    )
 }
+
 
 # DATABASES = {
 #     'default': {
